@@ -1,0 +1,20 @@
+#    SPDX-FileCopyrightText: 2024 Joao Otavio <joao0otavio3@gmail.com>
+#   
+#    SPDX-License-Identifier: GPL-3.0-or-later
+
+1) 
+
+    d) Os arquivos só diferem no bytecode do JMP, na implementação foi utilizado o bytecode 0xEA e não o 0xEB, passando o endereço do jump de forma absoluta.
+
+    e) Os códigos ficaram parecidos, com algumas diferenças:
+        - Na versão desmontada não aparecearam algumas linhas como .code16.global _start.
+        - Na versão desmontada a label _start apareceu como .data.
+        - Na versão desmontada não aprece a label halt.
+        - Na versão desmontada os dois últimos bytes de assinatura da BIOS foram interpretados como opcodes.
+        - Na versão desmontada o JMP aparece omo LJMP (jump de forma absoluta).
+    
+    f) A mensagem foi impressa com sucesso no qemu.
+
+    g) Não foi possível realizar os testes em hardware real.
+
+    i) Foi preciso remover o .fill para o as não dar erro na montagem. O hw2.bin não funcionou no qemu, a BIOS indica que não é um dispositivo bootável. Os arquivos hw.bin e hw2.bin ficaram bem diferente, a versão feita com o GNU é maior e apresenta mais informações, como um cabeçalho ELF e informações de linkagem da label halt, porém, no meio do executável hw2.bin, é possível identificar as instruções conhecidas de load do valor ASCII de caracteres e chamada de interrupção da BIOS.
