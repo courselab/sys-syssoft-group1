@@ -1,0 +1,24 @@
+#    SPDX-FileCopyrightText: 2024 joao <j.otavio.s@usp.br>
+#   
+#    SPDX-License-Identifier: GPL-3.0-or-later
+
+Não sendo possível alterar a libcry nem o código/instruções do executável decode, em decorrência das validações de hash, a estratégia utilizada foi tentar burlar a verificação do token.
+
+É possível imaginar que há uma comparação entre o token digitado e o token real, sendo assim, é razoável inferir que a implementação utiliza a strcmp. Também dá pra ver uma chamada para essa função no assembly (executável desmontado com objdump).
+
+    804937c:       e8 bf fc ff ff          call   8049040 <strcmp@plt>
+
+Logo, solução foi usar o pré-carregamento de uma biblioteca (LD_PRELOAD) com uma função strcmp alterada, que sempre retorna que as strings são iguais.
+
+    int strcmp(const char *s1, const char *s2) {
+        return 0;
+    }
+
+
+    all: libpoisestrcmp.so
+        LD_PRELOAD=./libpoisestrcmp.so ./decode secret.cry
+
+    libpoisestrcmp.so:
+        gcc --shared -o libpoisestrcmp.so libpoisestrcmp.c -m32
+
+mensagem: https://drive.google.com/file/d/1n0w8dFS8zJ7flnAQI75uLkw40IzAVUdW
