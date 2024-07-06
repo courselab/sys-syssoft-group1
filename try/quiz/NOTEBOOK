@@ -1,0 +1,51 @@
+#    SPDX-FileCopyrightText: 2024 joao <j.otavio.s@usp.br>
+#   
+#    SPDX-License-Identifier: GPL-3.0-or-later
+
+p1: 
+As execuções mostram diferentes endereços para a main. Isso ocorre porque a cada execução o SO está criando um novo processo e também existem mecanismos para randomizar o posicionamento das seções de memória (questões de segurança).
+
+p2:
+O programa dá acesso mesmo a senha digitada não sendo "foo", isso porque a string digitada é maior que o buffer, logo há um buffer overflow que afeta a flag verified, então a condição if que verifica a flag é verdadeira. Uma possível alteração seria trocar o scanf pelo fgets, dessa forma seria possível definir um número máximo de caracteres a serem lidos do stdin.
+
+p3:
+a) A ABI descreve as convenções de interface no nível binário. A função passa o parâmetro para função pushando ele para a stack, após a execução, o stack pointer (ESP) é restaurado.
+
+b) O retorno é feito colocando o valor no registrador eax. Isso também vai de acordo com a ABI, garantindo consistências de valores, variáveis locais, endereços de retorno, etc.
+
+c) Nas primeiras instruções, o base pointer atual é guardado na stack, e o stack pointer é copiado para o base pointer. A penúltima instrução faz o processo contrário, salva o ebp no esp e restaura o ebp com o valor guardado na stack. Isso é condizente com a ABI, para garantir que a stack seja corretamente manipulada, entre as passagem de parâmetros, retornos e variáveis locais.
+
+d) Essas instruções manipulam o stack pointer para alocar espaço para as variáveis locais, na main também é feita um alinhamento do stack pointer com a operação bitwise.
+
+e) Com a mudança de tipo, é vista a alteração no assembly, sendo essa o ajuste do call em decorrência da diferença de tamanho dos tipos (2 bytes).
+
+p4:
+a) Todos printaram "Foo". No terceiro foi necessário passar o caminho da lib .so para executar.
+
+b) O v3 é o menor, já que usa dll, então só há anotações das referências e o código não é concatenado ao programa. O v2 é intermediário, pois só pega o necessário do .a. O maior é v1, já que a montagem é feita passando tudo (os arquivos .o) no gcc, acaba incluindo funções não utilizadas.
+
+c) No primeiro foi feita a linkagem de tudo no gcc, aparecem as duas funções com o T (símbolo está resolvido, no código). No segundo somente a função utilizada aparece (com o T também). No último só aparece a função utilizada com o símbol U, indicando que o símbolo está indefinido, já que esse exemplo usa dll (implementação da função não foi concatenada). 
+
+1
+000011de T bar
+000011b3 T foo
+2
+000011b3 T foo
+3
+         U foo
+
+d) No último aparece a informação da libp4.so  0x00000001 (NEEDED)                     Shared library: [libc.so.6].
+Como nos outros não há o uso de dll, a implementação é concatenada, não há essa referência para a biblioteca compartilhada. No p4-v3, o kernel deve carregar a lib compartilhada em memória quando o programa for executado.
+
+e)
+    a) 
+        static: É mais fácil de distribuir, já que já está tudo no executável. Porém, o executável será maior.
+        dynamic: O executável é menor . Porém, o usuário precisa ter a lib (mais difícil distribuir); e podem haver diferentes usuários rodando diferentes versões da lib.
+
+    b)
+        static: O comportamento é mais estável, já que da pra saber exatamente a versão da lib que está sendo utilizada pelo executável. Porém, há a dificuldade de rebuild e redistribuição dos executáveis.
+        dynamic: O update não implica em uma necessidade de rebuild do executável. Porém, podem haver diferentes usuários rodando diferentes versões da lib.
+
+    c)
+        static: Talvez tenha uma pequena vantagem de performance, já que o código foi concatenado. Há um isolamento entra as libs de cada instância rodando que pode ser benéfico, mas também implica em um maior consumo de recursos.
+        dynamic: As instâncias compartilham a lib em memória, reduzindo o gasto de recursos.
