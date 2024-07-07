@@ -1,12 +1,20 @@
 #    SPDX-FileCopyrightText: 2024 joao <j.otavio.s@usp.br>
+#    SPDX-FileCopyrightText: 2024 edu <eduardo.maciel.s@usp.br>
 #   
 #    SPDX-License-Identifier: GPL-3.0-or-later
 
 p1: 
-As execuções mostram diferentes endereços para a main. Isso ocorre porque a cada execução o SO está criando um novo processo e também existem mecanismos para randomizar o posicionamento das seções de memória (questões de segurança).
+As execuções mostram diferentes endereços para a main. 
+Isso ocorre porque a cada execução o SO está criando um novo processo e também existem mecanismos para randomizar o posicionamento das seções de memória (questões de segurança).
+Isso é feito para dificultar ataques que dependem de saber o endereço exato da memória.
+
 
 p2:
-O programa dá acesso mesmo a senha digitada não sendo "foo", isso porque a string digitada é maior que o buffer, logo há um buffer overflow que afeta a flag verified, então a condição if que verifica a flag é verdadeira. Uma possível alteração seria trocar o scanf pelo fgets, dessa forma seria possível definir um número máximo de caracteres a serem lidos do stdin.
+O programa dá acesso mesmo a senha digitada não sendo "foo", isso porque a string digitada é maior que o buffer, logo há um buffer overflow que afeta a flag verified, então a condição if que verifica a flag é verdadeira. 
+
+Uma possível alteração seria trocar o scanf pelo fgets, dessa forma seria possível definir um número máximo de caracteres a serem lidos do stdin.
+
+Outra solução é sempre compilar o código com a flag -fstack-protector, que adiciona um canário na stack, para verificar se houve overflow para que não ocorra a alteração de variáveis importantes.
 
 p3:
 a) A ABI descreve as convenções de interface no nível binário. A função passa o parâmetro para função pushando ele para a stack, após a execução, o stack pointer (ESP) é restaurado.
