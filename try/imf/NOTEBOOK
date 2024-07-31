@@ -22,3 +22,5 @@ Logo, solução foi usar o pré-carregamento de uma biblioteca (LD_PRELOAD) com 
         gcc --shared -o libpoisestrcmp.so libpoisestrcmp.c -m32
 
 mensagem: https://drive.google.com/file/d/1n0w8dFS8zJ7flnAQI75uLkw40IzAVUdW
+
+~~~>> 10

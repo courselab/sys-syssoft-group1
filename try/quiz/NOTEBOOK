@@ -8,6 +8,8 @@ As execuções mostram diferentes endereços para a main.
 Isso ocorre porque a cada execução o SO está criando um novo processo e também existem mecanismos para randomizar o posicionamento das seções de memória (questões de segurança).
 Isso é feito para dificultar ataques que dependem de saber o endereço exato da memória.
 
+~~~> ASL, right?
+~~~>> 2.5
 
 p2:
 O programa dá acesso mesmo a senha digitada não sendo "foo", isso porque a string digitada é maior que o buffer, logo há um buffer overflow que afeta a flag verified, então a condição if que verifica a flag é verdadeira. 
@@ -15,6 +17,11 @@ O programa dá acesso mesmo a senha digitada não sendo "foo", isso porque a str
 Uma possível alteração seria trocar o scanf pelo fgets, dessa forma seria possível definir um número máximo de caracteres a serem lidos do stdin.
 
 Outra solução é sempre compilar o código com a flag -fstack-protector, que adiciona um canário na stack, para verificar se houve overflow para que não ocorra a alteração de variáveis importantes.
+
+~~~> E você testou essa solução baseda na flag, em lugar da troca da função?
+     Ela não funciona nesse caso. Por quê?
+
+~~~>> 2.0
 
 p3:
 a) A ABI descreve as convenções de interface no nível binário. A função passa o parâmetro para função pushando ele para a stack, após a execução, o stack pointer (ESP) é restaurado.
@@ -26,6 +33,8 @@ c) Nas primeiras instruções, o base pointer atual é guardado na stack, e o st
 d) Essas instruções manipulam o stack pointer para alocar espaço para as variáveis locais, na main também é feita um alinhamento do stack pointer com a operação bitwise.
 
 e) Com a mudança de tipo, é vista a alteração no assembly, sendo essa o ajuste do call em decorrência da diferença de tamanho dos tipos (2 bytes).
+
+~~~>> 2.5
 
 p4:
 a) Todos printaram "Foo". No terceiro foi necessário passar o caminho da lib .so para executar.
@@ -57,3 +66,5 @@ e)
     c)
         static: Talvez tenha uma pequena vantagem de performance, já que o código foi concatenado. Há um isolamento entra as libs de cada instância rodando que pode ser benéfico, mas também implica em um maior consumo de recursos.
         dynamic: As instâncias compartilham a lib em memória, reduzindo o gasto de recursos.
+
+~~~>> 2.5
